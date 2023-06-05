@@ -1,0 +1,5 @@
+dist-newstyle/
+waitForUrl.db
+token.env
+registeredUsers.txt
+telegramBot.db

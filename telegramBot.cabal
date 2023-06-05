@@ -1,0 +1,39 @@
+cabal-version:      3.0
+name:               telegramBot
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+synopsis: A telegram bot which tell you the next lecture and other stuff
+
+license:            NONE
+author:             Aaron Müller / Manuel Patrone / Nils Stutz
+
+extra-source-files: README.md
+
+executable telegramBot
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules:   ICalParser
+                    ,Calendar
+                    ,Parser
+                    ,EventFormater
+                    ,Persist
+                    ,PersistDatabase
+                    ,PersistFile
+                    ,BotLogic
+    build-depends:    base >= 4.14.3 && < 5
+                     ,telegram-bot-simple
+                     ,text
+                     ,telegram-bot-api
+                     ,mtl
+                     ,directory
+                     ,time
+                     ,bytestring
+                     ,http-client
+                     ,http-conduit
+                     ,sqlite-simple
+    hs-source-dirs:   app
+                     ,app/calendar
+                     ,app/persist
+    default-language: Haskell2010
