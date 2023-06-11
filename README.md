@@ -2,6 +2,29 @@
 
 Dieser TelegramBot liefert dir deine nächsten Lektionen aus dem Stundenplan.
 
+- [Telegram Bot](#telegram-bot)
+  - [Installation](#installation)
+  - [Projektstruktur](#projektstruktur)
+    - [app/calendar](#appcalendar)
+    - [src/persist](#srcpersist)
+    - [test](#test)
+    - [app/BotLogic.hs](#appbotlogichs)
+    - [app/Main.hs](#appmainhs)
+  - [Entwicklung mit VS Code `.devcontainers`](#entwicklung-mit-vs-code-devcontainers)
+    - [Warum wir uns entschieden haben `.devcontainers` zu verwenden](#warum-wir-uns-entschieden-haben-devcontainers-zu-verwenden)
+    - [Einrichtung des Entwicklungsbereichs](#einrichtung-des-entwicklungsbereichs)
+      - [Voraussetzungen](#voraussetzungen)
+      - [Einrichtung](#einrichtung)
+      - [Nützliche Tipps](#nützliche-tipps)
+  - [SQLite](#sqlite)
+    - [Integration von SQLite](#integration-von-sqlite)
+  - [Testing](#testing)
+    - [Verwendung von hspec](#verwendung-von-hspec)
+    - [Fokus auf Unit Tests](#fokus-auf-unit-tests)
+    - [Organisation der Testdateien](#organisation-der-testdateien)
+    - [Ausführung der Tests](#ausführung-der-tests)
+
+
 ## Installation
 Erstelle im Root-Verzeichnis eine Datei namens `token.env`.
 
@@ -21,8 +44,11 @@ Die Projektstruktur gliedert sich in verschiedene Verzeichnisse und Dateien, um 
 ### app/calendar
 Der Ordner "app/calendar" beinhaltet alle Dateien, die für das Parsen der .ics-Dateien zuständig sind. Diese Dateien enthalten den Code, der benötigt wird, um Informationen aus den .ics-Dateien zu extrahieren und in einem geeigneten Format darzustellen. Das Parsen der .ics-Dateien ermöglicht es dem System, Veranstaltungen und Termine aus den eingehenden Dateien zu erfassen und zu verarbeiten.
 
-### app/persist
-Im Verzeichnis "app/persist" findet sich der Code, der für die Speicherung der Benutzerinformationen verantwortlich ist. Dies kann entweder durch das Speichern der Informationen in Dateien oder durch die Verwendung einer Datenbank realisiert werden. Das Verzeichnis enthält die entsprechenden Dateien und Module, um die Speicherung und den Zugriff auf die Benutzerdaten zu ermöglichen.
+### src/persist
+Im Verzeichnis "src/persist" findet sich der Code, der für die Speicherung der Benutzerinformationen verantwortlich ist. Dies kann entweder durch das Speichern der Informationen in Dateien oder durch die Verwendung einer Datenbank realisiert werden. Das Verzeichnis enthält die entsprechenden Dateien und Module, um die Speicherung und den Zugriff auf die Benutzerdaten zu ermöglichen. Wir haben den Code für die Persistierung der Daten bewusst in das "src"-Verzeichnis gelegt, um ihn von der Hauptapplikation zu trennen. Dadurch wird der Persistenzcode unabhängig von der spezifischen Logik der Hauptapplikation und kann einfacher in anderen Projekten oder Anwendungen wiederverwendet werden. Durch das Auslagern des Persistenzcodes in ein separates Verzeichnis oder Modul wird die Entwicklung des Codes unabhängiger. Diese Trennung erleichtert auch die Testbarkeit des Codes.
+
+### test
+Im Verzeichnis "test" befinden sich die Unit Tests. Im Kapitel "Testing" wird genauer auf diese Tests eingegangen.
 
 ### app/BotLogic.hs
 Die Datei "app/BotLogic.hs" stellt eine Schnittstelle für den Bot dar. Sie dient als zentrales Modul, das den Austausch von Bots ermöglicht. Durch die Verwendung dieser Schnittstelle ist es möglich, verschiedene Bot-Bibliotheken zu verwenden und zu ersetzen, je nach den Anforderungen des Projekts. Beispielsweise kann die Bot-Bibliothek von Telegram durch eine andere Bibliothek wie Threema ersetzt werden, ohne den restlichen Code des Projekts zu beeinflussen. Das "BotLogic" Modul bietet eine einheitliche Abstraktionsschicht für die Bot-Funktionalitäten und erleichtert so die Wartung und Erweiterung des Projekts.
@@ -31,39 +57,34 @@ Die Datei "app/BotLogic.hs" stellt eine Schnittstelle für den Bot dar. Sie dien
 Die Datei "app/Main.hs" dient als Einstiegspunkt des Projekts. Hier wird der Telegram-Bot gestartet und die Hauptimplementierung erfolgt. Dieses Modul verwendet die Schnittstelle aus "BotLogic.hs", um die spezifischen Bot-Funktionen zu implementieren und die Interaktion mit dem Telegram-Messenger zu ermöglichen. Der Telegram-Bot kann in diesem Modul konfiguriert und gesteuert werden, um auf eingehende Nachrichten und Befehle zu reagieren und entsprechende Aktionen auszuführen.
 
 Durch diese Strukturierung des Projekts in verschiedene Verzeichnisse und Dateien wird eine klare Trennung der Verantwortlichkeiten und eine bessere Wartbarkeit des Codes erreicht. Jedes Verzeichnis und jede Datei hat eine spezifische Aufgabe und erleichtert so die Entwicklung, Erweiterung und Wartung des Projekts.
+## Entwicklung mit VS Code `.devcontainers`
 
-### Entwicklung mit VS Code `.devcontainers`
+### Warum wir uns entschieden haben `.devcontainers` zu verwenden
+`.devcontainers` sind ein nützliches Werkzeug für Entwickler:innen, die konsistente und reproduzierbare Entwicklungsumgebungen sicherstellen möchten. Hier sind einige Gründe, warum die Verwendung von `.devcontainers` von Vorteil sein kann:
 
-#### Warum wir uns entschieden haben `.devcontainers` zu verwenden:
-`.devcontainers` sind ein nützliches Werkzeug für Entwickler:innen, die konsistente und reproduzierbare Entwicklungsumgebungen sicherstellen möchten. Hier sind ein paar Gründe, warum du `.devcontainers` verwenden möchtest:
+- Konsistenz: Durch die Verwendung von `.devcontainers` kann sichergestellt werden, dass jeder im Team dieselbe Entwicklungsumgebung nutzt. Dies kann dazu beitragen, Probleme aufgrund von Unterschieden in Abhängigkeiten, Bibliotheken und anderen umgebungsspezifischen Faktoren zu reduzieren.
 
-- Konsistenz: Durch die Verwendung eines `.devcontainers` kannst du sicherstellen, dass jeder in deinem Team dieselbe Entwicklungsumgebung verwendet, was helfen kann, Probleme aufgrund von Unterschieden in Abhängigkeiten, Bibliotheken und anderen umgebungsspezifischen Faktoren zu reduzieren.
-
-- Reproduzierbarkeit: Da `.devcontainers` auf Docker-Images basieren, kannst du deine Entwicklungsumgebung einfach mit anderen teilen oder auf einer anderen Maschine reproduzieren, was die Zusammenarbeit erleichtert und beim Debuggen von Problemen hilft.
+- Reproduzierbarkeit: Da `.devcontainers` auf Docker-Images basieren, können Entwicklungsumgebungen einfach geteilt oder auf anderen Maschinen reproduziert werden. Dies erleichtert die Zusammenarbeit und unterstützt beim Debuggen von Problemen. 
 
 - Isolierung: `.devcontainers` bieten eine isolierte Umgebung für die Entwicklung, was helfen kann, Konflikte mit anderen Anwendungen oder Systemkonfigurationen zu vermeiden.
 
-- Einfache Einrichtung: `.devcontainers` können mit wenigen Zeilen Konfigurationscode eingerichtet werden, was es einfach macht, mit einem neuen Projekt zu starten oder zwischen verschiedenen Umgebungen zu wechseln.
+### Einrichtung des Entwicklungsbereichs
+Zurzeit unterstützt IntelliJ keine `.devcontainers`, aber das IntelliJ-Team arbeitet daran.
 
-- Insgesamt sind `.devcontainers` ein leistungsstarkes Werkzeug für Entwickler:innen, die ihren Entwicklungs-Workflow optimieren und konsistente und zuverlässige Ergebnisse sicherstellen möchten.
-
-#### Einrichtung des Entwicklungsbereichs
-Zurzeit unterstützt IntelliJ keine `.devcontainers`, aber das IntelliJ-Team arbeitet daran. Andernfalls kannst du es auch lokal entwickeln, sodass du IntelliJ oder eine andere IDE verwenden kannst.
-
-##### Voraussetzungen
-Bevor du beginnst, solltest du sicherstellen, dass folgende Software installiert ist:
+#### Voraussetzungen
+Bevor Sie beginnen, sollten Sie sicherstellen, dass die folgende Software installiert ist:
 
 - Visual Studio Code
 - Docker
 
-##### Einrichtung
-- Öffne Visual Studio Code.
-- Verwende den Befehl "Datei" > "Ordner öffnen" im Menü, um das Projektverzeichnis zu öffnen.
--  Sobald das Projekt geöffnet ist, wird ein Dialogfenster angezeigt, das fragt, ob das Projekt in einem Container neu geöffnet werden soll. Klicke auf "Im Container neu öffnen", um fortzufahren.
-- Wenn das Dialogfenster nicht angezeigt wird, kannst du das Projekt trotzdem in einem Container öffnen, indem du die Befehls-Palette verwendest. Drücke `Strg+Shift+P` unter Windows oder `Cmd+Shift+P` auf einem Mac, um die Palette zu öffnen, suche dann nach "Remote-Containers: Im Container neu öffnen" und wähle es aus.
-- Sobald du das Projekt in einem Container geöffnet hast, wird Visual Studio Code das Container-Image erstellen und die Umgebung einrichten. Dieser Vorgang kann je nach Grösse des Images und der Komplexität des Projekts einige Minuten dauern.
-##### Nützliche Tipps
-- Wenn der Container neu erstellt werden muss, drücke `Strg+Shift+P` unter Windows oder `Cmd+Shift+P` und suche nach dem Befehl "Dev Containers: Neu erstellen und im Container öffnen".
+#### Einrichtung
+- Öffnen Sie Visual Studio Code.
+- Verwenden Sie den Befehl "Datei" > "Ordner öffnen" im Menü, um das Projektverzeichnis zu öffnen.
+-  Sobald das Projekt geöffnet ist, wird ein Dialogfenster angezeigt, das fragt, ob das Projekt in einem Container neu geöffnet werden soll. Klicken Sie auf "Im Container neu öffnen", um fortzufahren.
+- Wenn das Dialogfenster nicht angezeigt wird, können Sie das Projekt trotzdem in einem Container öffnen, indem Sie die Befehls-Palette verwenden. Drücken Sie unter Windows `Strg+Shift+P` oder auf einem Mac `Cmd+Shift+P`, um die Palette zu öffnen. Suchen Sie nach "Remote-Containers: Im Container neu öffnen" und wählen Sie es aus.
+- Sobald Sie das Projekt in einem Container geöffnet haben, wird Visual Studio Code das Container-Image erstellen und die Umgebung einrichten. Dieser Vorgang kann je nach Grösse des Images und der Komplexität des Projekts einige Minuten dauern.
+#### Nützliche Tipps
+- Wenn der Container neu erstellt werden muss, drücken Sie `Strg+Shift+P` unter Windows oder `Cmd+Shift+P` und suchen Sie nach dem Befehl "Dev Containers: Neu erstellen und im Container öffnen".
 - Beim ersten Start des Containers wird automatisch ein `cabal update` und ein ?`cabal build` durchgeführt, was einige Minuten in Anspruch nehmen kann.
 
 ## SQLite
@@ -76,3 +97,29 @@ Die sqlite-simple Bibliothek bietet eine effiziente Möglichkeit, mit SQLite-Dat
 Um den Inhalt der SQLite-Datenbanken zu verwalten, wird die Verwendung der [SQLite-Tools]('https://www.sqlite.org/download.html') empfohlen. Diese Tools bieten eine intuitive Benutzeroberfläche und umfassende Funktionen, um den Inhalt von SQLite-Datenbanken zu bearbeiten. Es konnte mithilfe der SQLite-Tools Abfragen ausgeführt werden, Daten exportiert und Datenbanken gesichert werden.
 
 Insgesamt wurde in dem Projekt die Kombination aus sqlite-simple und SQLite-Tools als leistungsstarke Lösung für die Verwaltung von SQLite-Datenbanken eingesetzt.
+
+## Testing
+Unser Haskell-Projekt setzt auf das Test-Framework "hspec", um eine umfassende Testabdeckung sicherzustellen und die Qualität unserer Software zu gewährleisten.
+Hier sind einige wichtige Punkte zum Thema Testing in unserem Projekt:
+
+### Verwendung von hspec
+- Wir setzen auf das bewährte Test-Framework [hspec](https://hspec.github.io/), um unsere Unit Tests zu schreiben und auszuführen.
+- Hspec bietet uns eine intuitive und ausdrucksstarke Syntax, um unsere Tests klar zu strukturieren und verständlich zu halten.
+
+### Fokus auf Unit Tests
+- Wir konzentrieren uns auf die Erstellung von Unit Tests, um einzelne Funktionen, Module oder Klassen unserer Anwendung zu überprüfen.
+- Durch die Aufteilung unserer Tests auf kleinere Einheiten können wir sicherstellen, dass jede Komponente unseres Codes isoliert getestet wird und die erwarteten Ergebnisse liefert.
+
+### Organisation der Testdateien
+
+- Unsere Testdateien befinden sich im Ordner "Test", wobei die Dateinamen den entsprechenden Dateien im App-Verzeichnis entsprechen.
+- Wir verwenden eine einfache Namenskonvention, bei der wir das Wort "Test" am Ende des Dateinamens anfügen.
+- Diese strukturierte Organisation ermöglicht uns eine klare Zuordnung zwischen den Tests und dem zugehörigen Code.
+
+### Ausführung der Tests
+
+- Um alle Tests auszuführen, verwenden wir den Befehl:
+```bash
+cabal test telegramBot-test
+```
+![Test status](/images/Tests_status.png)

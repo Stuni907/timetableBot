@@ -112,7 +112,7 @@ getReminderMessage url = do
         Just event -> pure $ Just $ formatEvent event
 
 
--- | *************
+-- | Basic function to get events as text
 getAsText :: Int -> (String -> IO (Maybe a)) -> (a -> Text) -> IO Text
 getAsText id get parse = do
                       url <- getEntry id

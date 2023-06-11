@@ -13,8 +13,8 @@ import Data.Int
 
 formatEvent :: Event -> Text
 formatEvent event = do
-    let startTime =   addUTCTime (offsetHours event) (posixSecondsToUTCTime (start event))
-    let endTime =  addUTCTime (offsetHours event) (posixSecondsToUTCTime (end event))
+    let startTime =   (start event) 
+    let endTime =  (end event)
     let startString = formatTime defaultTimeLocale "%H:%M" startTime
     let endString = formatTime defaultTimeLocale "%H:%M" endTime
     let dateString = formatTime defaultTimeLocale "%d.%m.%Y" startTime
@@ -29,7 +29,7 @@ formatEvents events = Text.intercalate "\n\n" $ map formatEvent events
 formatTechnicalEvent :: Event -> Text
 formatTechnicalEvent event = do
     let startTime = addUTCTime (offsetHours event) (posixSecondsToUTCTime (start event))
-    let endTime =  addUTCTime (offsetHours event) (posixSecondsToUTCTime (start event))
+    let endTime =  addUTCTime (offsetHours event) (posixSecondsToUTCTime (end event))
     let startString = formatTime defaultTimeLocale "%H:%M" startTime
     let endString = formatTime defaultTimeLocale "%H:%M" endTime
     let dateString = formatTime defaultTimeLocale "%d.%m.%Y" startTime

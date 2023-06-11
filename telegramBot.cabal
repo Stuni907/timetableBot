@@ -9,19 +9,11 @@ license:            NONE
 author:             Aaron Müller / Manuel Patrone / Nils Stutz
 
 extra-source-files: README.md
+    
 
-executable telegramBot
-    main-is:          Main.hs
-
-    -- Modules included in this executable, other than Main.
-    other-modules:   ICalParser
-                    ,Calendar
-                    ,Parser
-                    ,EventFormater
-                    ,Persist
-                    ,PersistDatabase
-                    ,PersistFile
-                    ,BotLogic
+library
+    exposed-modules:  Persist
+                     ,PersistDatabase
     build-depends:    base >= 4.14.3 && < 5
                      ,telegram-bot-simple
                      ,text
@@ -33,7 +25,61 @@ executable telegramBot
                      ,http-client
                      ,http-conduit
                      ,sqlite-simple
+    hs-source-dirs:   src/persist
+    default-language: Haskell2010
+
+executable telegramBot
+    main-is:          Main.hs    
+    build-depends:    base >= 4.14.3 && < 5
+                     ,telegram-bot-simple
+                     ,text
+                     ,telegram-bot-api
+                     ,mtl
+                     ,directory
+                     ,time
+                     ,bytestring
+                     ,http-client
+                     ,http-conduit
+                     ,sqlite-simple
+                     ,telegramBot 
     hs-source-dirs:   app
                      ,app/calendar
-                     ,app/persist
     default-language: Haskell2010
+    other-modules:    BotLogic
+                     ,Calendar
+                     ,EventFormater
+                     ,ICalParser
+                     ,Parser
+
+test-suite telegramBot-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:    test
+                      ,test/calendar
+                      ,app/calendar
+                      ,app
+    main-is:          MainTest.hs
+    build-depends:    base >= 4.14.3 && < 5
+                     ,telegram-bot-simple
+                     ,text
+                     ,telegram-bot-api
+                     ,mtl
+                     ,directory
+                     ,time
+                     ,bytestring
+                     ,http-client
+                     ,http-conduit
+                     ,sqlite-simple
+                     ,telegramBot
+                     ,hspec
+    other-modules:  Calendar
+                    ,CalendarTest
+                    ,EventFormater
+                    ,EventFormaterTest
+                    ,ICalParser
+                    ,ICalParserTest
+                    ,Parser
+                    ,PersistDatabaseTest
+                    ,BotLogic
+                    ,BotLogicTest
+
